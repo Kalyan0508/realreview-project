@@ -6,14 +6,27 @@ exports.uploadImage = async (req) => {
   }
 
   const { user, location } = req.body;
+
+  // Validate user and location
   if (!user || !location) {
-    throw new Error("User and location are required");
+    throw new Error("user and location are required");
   }
 
   const imagePath = req.file.path;
-  const timestamp = new Date();
+  const timestamp = new Date().toISOString();
 
-  await imageRepo.insertImage(user, location, imagePath, timestamp);
+  const data = {
+    user_name: user,
+    location,
+    image_path: imagePath,
+    timestamp,
+  };
+
+  const result = await imageRepo.dynamicInsert('images', data, ['user_name', 'location']);
+
+  if (result.error) {
+    throw new Error(result.error);
+  }
 };
 
 exports.getImages = async () => {
