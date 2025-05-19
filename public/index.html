@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>RealReview – Upload Image</title>
+</head>
+<body>
+  <h1>Upload an Image</h1>
+  <form id="uploadForm" enctype="multipart/form-data" method="POST" action="/api/upload">
+    <label>
+      Name:
+      <input type="text" name="user_name" required />
+    </label>
+    <br />
+    <label>
+      Location:
+      <input type="text" name="location" required />
+    </label>
+    <br />
+    <label>
+      Image:
+      <input type="file" name="image" accept="image/*" required />
+    </label>
+    <br />
+    <button type="submit">Upload</button>
+  </form>
+
+  <p id="status"></p>
+  <script>
+    // Intercept form submission to show status without page reload
+    document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form); 
+
+      try {
+        const resp = await fetch(form.action, {
+          method: 'POST',
+          body: formData,
+        });
+        const result = await resp.json();    
+        document.getElementById('status').textContent = result.message || result.error;
+      } catch (err) {
+        document.getElementById('status').textContent = 'Upload failed: ' + err;
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>RealReview – Gallery</title>
+  <style>
+    body { font-family: sans-serif; }
+    .thumb { width: 150px; height: 150px; object-fit: cover; margin: 5px; }
+    .grid { display: flex; flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+  <h1>Image Gallery</h1>
+  <div id="gallery" class="grid"></div>
+
+  <script>
+    async function loadImages() {
+      try {
+        const resp = await fetch('/api/images');
+        const images = await resp.json();    
+        const gallery = document.getElementById('gallery');
+        gallery.innerHTML = images.map(img => `
+          <div>
+            <img src="/${img.image_path.replace(/\\/g, '/')}" 
+                 alt="${img.user_name} @ ${img.location}" 
+                 class="thumb" />
+            <p>${img.user_name} – ${img.location}</p>
+          </div>
+        `).join('');
+      } catch (err) {
+        console.error('Gallery load error:', err);
+      }
+    }
+    loadImages();
+  </script>
+</body>
+</html>
