@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const path= require("path");
 dotenv.config();
 
 const app = express();
@@ -10,8 +11,11 @@ app.use(express.urlencoded({ extended: true }));
 
 // Serve uploaded images statically
 app.use('/uploads', express.static('uploads'));
+// at the top of server.js, after app initialization:
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Routes
+
 const imageRoutes = require("./routes/imageRoutes");
 app.use("/api", imageRoutes);
 
